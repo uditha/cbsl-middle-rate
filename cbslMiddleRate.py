@@ -9,7 +9,6 @@ import pandas as pd
 
 url =  'https://www.cbsl.gov.lk/en/middle-exchange-rate-and-variation-margin'
 
-
 def get_middle_rate(url):
     # retrieve the latest pdf file
     try:
@@ -44,19 +43,25 @@ ps = article.find_all('p')
 
 rates = []
 
-print(len(ps))
-
-for i, p in enumerate(ps):
-    if i == 0:
-        continue
-    url = p.find('a')['href']
-    data =  get_middle_rate(url)
-    if data is not None:
-        rates.append(data)
-        
-    print(i, " Done Processing", url)
+try:
+    option = int(input("Do you want to see the latest rate or download all rates \n Type 1 - for latest rate \n Type 2 - for all rates in a CSV file \n>>"))
     
-df = pd.DataFrame(rates)
-df.to_csv('middle_rate.csv', index=False)
-print("Done")
-
+    if option == 1:
+        url = ps[2].find('a')['href']
+        data =  get_middle_rate(url)
+        print(data['Date'], data['MiddleRate'], data['UpperMargin'], data['LowerMargin'])
+        
+    elif option == 2:
+        for i, p in enumerate(ps):
+            if i == 0:
+                continue
+            url = p.find('a')['href']
+            data =  get_middle_rate(url)
+            if data is not None:
+                rates.append(data)        
+        df = pd.DataFrame(rates)
+        df.to_csv('middle_rate.csv', index=False)
+        print("Successfully downloaded")
+        
+except Exception as e:
+    print("error", e)

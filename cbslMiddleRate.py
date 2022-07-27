@@ -10,7 +10,7 @@ import pandas as pd
 url =  'https://www.cbsl.gov.lk/en/middle-exchange-rate-and-variation-margin'
 
 def get_middle_rate(url):
-    # retrieve the latest pdf file
+    """ Return the middle rate and variation margin from the url """
     try:
         pdf_content = requests.get(url, stream=True).content
         pdf = PdfReader(BytesIO(pdf_content))
@@ -38,7 +38,6 @@ bs = BeautifulSoup(html, 'html.parser')
 
 # //*[@id="article-12453"]/div/div/div/div/p[2]
 article = bs.find('div', id='article-12453')
-# latest_file_url = article.find_all('p')[6].find('a')['href']
 ps = article.find_all('p')
 
 rates = []
